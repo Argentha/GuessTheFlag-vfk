@@ -9,7 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var showingAlert = false
+//4    @State private var showingAlert = false
+    
+    @State private var showingScore = false
+    @State private var scoreTitle = ""
+    
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy",
+                     "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
     
     var body: some View {
         
@@ -73,20 +80,62 @@ struct ContentView: View {
 //        .renderingMode(.original)
         
         
-        Button("Show Alert") {
-            showingAlert = true
-        }
-        .alert("Important message", isPresented: $showingAlert) {
-            Button("Delete", role: .destructive) { }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("Please read this")
-        }
-    
+//4        Button("Show Alert") {
+//            showingAlert = true
+//        }
+//        .alert("Important message", isPresented: $showingAlert) {
+//            Button("Delete", role: .destructive) { }
+//            Button("Cancel", role: .cancel) { }
+//        } message: {
+//            Text("Please read this")
+//        }
         
-        
+        ZStack {
+            Color.blue
+                .ignoresSafeArea()
+            
+            VStack(spacing: 30) {
+                VStack {
+                    Text("Tap the flag of")
+                        .foregroundColor(.white)
+                    Text(countries[correctAnswer])
+                        .foregroundColor(.white)
+                }
+                
+                ForEach(0..<3) { number in
+                    Button {
+                        flagTapped(number)
+                    } label: {
+                        Image(countries[number])
+                            .renderingMode(.original)
+                    }
+                }
+            }
+            .alert(scoreTitle, isPresented: $showingScore) {
+                Button("Continue", action: askQuestion)
+            } message: {
+                Text("Your score is ???")
+            }
+        }
     }
-//        func executeDelete() {
+    
+    func flagTapped(_ number: Int) {
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+        } else {
+            scoreTitle = "Wrong"
+        }
+        
+        showingScore = true
+    }
+    
+    func askQuestion() {
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+    }
+    
+    
+//4        func executeDelete() {
 //            print("Now deleting")
 //
 //    }
